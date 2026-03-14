@@ -6,15 +6,14 @@ app = FastAPI()
 # Basic logger
 logging.basicConfig(level=logging.INFO)
 
-@app.get("/ping")
-async def ping():
-    return {"status": "ok"}
-
 @app.post("/callback")
 async def callback(request: Request):
     payload = await request.json()
     logging.info(f"Received eBay callback: {payload}")
 
-    # TODO: Add logic to delete user data/tokens here
+    # Echo back eBay's verification token during handshake
+    if "verificationToken" in payload:
+        return {"verificationToken": payload["verificationToken"]}
 
+    # Handle real deletion events
     return {"message": "Callback received"}
