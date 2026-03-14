@@ -8,12 +8,15 @@ logging.basicConfig(level=logging.INFO)
 
 @app.post("/callback")
 async def callback(request: Request):
-    payload = await request.json()
+    try:
+        payload = await request.json()
+    except Exception:
+        return {"error": "Invalid JSON"}
+
     logging.info(f"Received eBay callback: {payload}")
 
     # Echo back eBay's verification token during handshake
     if "verificationToken" in payload:
         return {"verificationToken": payload["verificationToken"]}
 
-    # Handle real deletion events
     return {"message": "Callback received"}
